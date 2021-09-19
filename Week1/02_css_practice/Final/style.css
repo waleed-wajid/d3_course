@@ -1,0 +1,17 @@
+h1 {
+    color: blue;
+}
+
+#window {
+    border: solid 1px black;
+    margin: 10px;
+    padding: 10px;
+}
+
+.highlight {
+    background-color: #33FF90;
+}
+
+button:hover {
+    background-color: red;
+}

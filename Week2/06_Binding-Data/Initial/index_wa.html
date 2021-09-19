@@ -1,0 +1,55 @@
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <button onclick="addNewClient()">Add</button>
+    <button onclick="removeClient()">Remove</button>
+    <div id="container"></div>
+</body>
+<script src="d3.js"></script>
+<script>
+    let container = d3.select("#container")
+    let clients = [{
+        Name: "Client0"
+    }]
+    let count = 1;
+
+
+    function addNewClient() {
+        clients.push({ Name: "Client" + count })
+        count += 1
+        showData(clients)
+    }
+
+    function removeClient() {
+        clients = clients.slice(0, -1)
+        count -= 1
+        showData(clients)
+    }
+
+    function showData(clients) {
+        <!-- Create a bind between the container element and the data -->
+        let join = container
+              .selectAll('div')
+              .data(clients);
+
+        <!-- for the data without any attached elements, append element -->
+        join.enter()
+            .append('div')
+            .text( (d) => d.Name + " New")
+
+        <!-- When data is removed, the elements without data need to be removed -->
+        join.exit().remove()
+
+        <!-- To see that the join.enter() only affects the new data without elements where as the join variable only references the bound data+elements-->
+        join.text( (d) => d.Name + " Updated")
+    }
+    showData(clients)
+
+
+</script>
+
+</html>
