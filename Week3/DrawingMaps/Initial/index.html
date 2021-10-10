@@ -1,0 +1,50 @@
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <svg id="container" height="300" width="500">
+        <g id="body" transform="translate(0,0)"></g>
+    </svg>
+</body>
+<script src="d3.js"></script>
+<script>
+    let body = d3.select("#body")
+    d3.json("countries.geo.json").then(showData)
+
+    function showData(mapInfo) {
+        let bodyHeight = 400
+        let bodyWidth = 400
+
+        // view the data
+        console.log(mapInfo)
+
+        // To plot the background
+        // Step 1: define a projection
+        let projection = d3.geoNaturalEarth1()  // Similar to scales: transforms data to graphical space
+                        .scale(80)  // Size of map
+                        .translate([bodyWidth/2, bodyHeight/2]) // move map to center of svg
+
+        // Step 2: Create path
+        // its like a line genertor for a line plot
+        let path = d3.geoPath()
+                    .projection(projection)
+
+        // Step 3: plot dadta
+        body.selectAll('path')
+            .data(mapInfo.features)
+            .enter().append('path')
+            .attr('d', d => path(d))
+            .attr('stroke', 'black')  //line color
+            .attr('fill', 'none')
+
+
+
+    }
+
+
+</script>
+
+</html>

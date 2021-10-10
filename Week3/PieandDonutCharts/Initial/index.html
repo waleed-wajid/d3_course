@@ -1,0 +1,91 @@
+<html>
+
+<head>
+    <style>
+
+
+
+
+    </style>
+</head>
+
+<body>
+    <svg id="container" height="300" width="500">
+        <g id="body" transform="translate(150,150)"></g>
+
+
+    </svg>
+
+</body>
+<script src="d3.js"></script>
+<script>
+    let body = d3.select("#body")
+    d3.csv("data.csv").then(showData)
+
+    function showData(data) {
+        let bodyHeight = 200
+        let bodyWidth = 400
+
+        data = data.map(d => ({
+            country: d.country,
+            sales: +d.sales
+        }))
+
+        // To create a pie chart, first the values in the data need
+        // to be converted to angles
+        let pie = d3.pie()
+                .value(d => d.sales)
+
+        // Creating a scale to map different colors for the categories
+        let colorScale =d3.scaleOrdinal()
+                .range(d3.schemeCategory10)
+                .domain(data.map(d => d.country))
+
+        console.log(pie(data))
+        console.log(colorScale("USA"))
+
+        // convert the data to arcs, to draw the pie chart
+        let arc = d3.arc()
+                  .outerRadius(bodyHeight/2)
+                  .innerRadius(0)
+
+        let g = body.selectAll(".arc")
+              .data(pie(data))  // using pie data as the angle info is needed
+              .enter()
+              .append('g')
+
+        g.append("path")
+          .attr("d",arc)
+          .attr("fill", d => {
+            return colorScale(d.data.country)
+                  })
+
+          // Add legend for data
+          var legendG = body.selectAll(".legend") // note appending it to mySvg and not svg to make positioning easier
+            .data(pie(data))
+            .enter()
+            .append("g")
+            .attr("transform", function(d,i){
+              return "translate(" + (bodyWidth - 210) + "," + (i * 15 + 20) + ")"; // place each legend on the right and bump each one down 15 pixels
+            })
+            .attr("class", "legend");
+
+          legendG.append("rect") // make a matching color rect
+            .attr("width", 10)
+            .attr("height", 10)
+            .attr("fill", d => colorScale(d.data.country));
+
+          legendG.append("text") // add the text
+            .text(function(d){
+              return d.data.country;
+            })
+            .style("font-size", 12)
+            .attr("y", 10)
+            .attr("x", 11);
+
+    }
+
+
+</script>
+
+</html>
